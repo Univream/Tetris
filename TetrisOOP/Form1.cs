@@ -23,6 +23,7 @@ namespace TetrisOOP
         {
             tetris = new Tetris(this, 9, 14);
             tetris.Start();
+            tetris.NewBlock += new  EventHandler(newBlockOnMap);
         }
 
 
@@ -47,6 +48,12 @@ namespace TetrisOOP
         {
             BtnRight.Enabled = tetris.BlockRight();
             BtnLeft.Enabled = true;
+        }
+
+        private void newBlockOnMap(object sender, EventArgs e)
+        {
+            BtnLeft.Enabled = true;
+            BtnRight.Enabled = true;
         }
     }
 }

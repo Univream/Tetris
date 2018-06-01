@@ -13,6 +13,7 @@ namespace TetrisOOP
     /// </summary>
     class Map
     {
+
         public Size size { get; set; }
 
         private Block[,] _blockMap;
@@ -66,6 +67,8 @@ namespace TetrisOOP
             _blockMap[0, 5] = _currentBlock;
             _bRow = 0;
             _bColumn = 5;
+
+           
         }
 
         public bool MoveBlock()

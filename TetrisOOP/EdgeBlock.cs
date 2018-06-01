@@ -10,6 +10,5 @@ namespace TetrisOOP
     {
         public EdgeBlock(int size) : base(size)
         {}
-        
     }
 }

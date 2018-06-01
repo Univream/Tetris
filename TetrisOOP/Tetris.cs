@@ -49,7 +49,9 @@ namespace TetrisOOP
             if (!_map.MoveBlock())
             {
                 _map.Check();
-                _map.AddBlock();                
+                _map.AddBlock();
+                var handler = NewBlock;
+                handler(this, EventArgs.Empty);
             }
         }
 
@@ -58,6 +60,8 @@ namespace TetrisOOP
             timer.Enabled = false;
             _map.DropBlock();
             timer.Enabled = true;
+            var handler = NewBlock;
+            handler(this, EventArgs.Empty);
         }
 
         public bool BlockLeft()
@@ -70,5 +74,7 @@ namespace TetrisOOP
             return _map.BlockRight();
         }
 
+
+        public event EventHandler NewBlock;
     }
 }
