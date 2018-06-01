@@ -28,13 +28,107 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.BtnRight = new System.Windows.Forms.Button();
+            this.BtnLeft = new System.Windows.Forms.Button();
+            this.BtnPause = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.BtnDrop = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // BtnRight
+            // 
+            this.BtnRight.Location = new System.Drawing.Point(11, 22);
+            this.BtnRight.Name = "BtnRight";
+            this.BtnRight.Size = new System.Drawing.Size(75, 23);
+            this.BtnRight.TabIndex = 0;
+            this.BtnRight.Text = "R";
+            this.BtnRight.UseVisualStyleBackColor = true;
+            this.BtnRight.Click += new System.EventHandler(this.BtnRight_Click);
+            // 
+            // BtnLeft
+            // 
+            this.BtnLeft.Location = new System.Drawing.Point(117, 22);
+            this.BtnLeft.Name = "BtnLeft";
+            this.BtnLeft.Size = new System.Drawing.Size(75, 23);
+            this.BtnLeft.TabIndex = 1;
+            this.BtnLeft.Text = "L";
+            this.BtnLeft.UseVisualStyleBackColor = true;
+            this.BtnLeft.Click += new System.EventHandler(this.BtnLeft_Click);
+            // 
+            // BtnPause
+            // 
+            this.BtnPause.Location = new System.Drawing.Point(66, 431);
+            this.BtnPause.Name = "BtnPause";
+            this.BtnPause.Size = new System.Drawing.Size(75, 40);
+            this.BtnPause.TabIndex = 3;
+            this.BtnPause.Text = "Pause";
+            this.BtnPause.UseVisualStyleBackColor = true;
+            this.BtnPause.Click += new System.EventHandler(this.BtnPause_Click);
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.panel1.Location = new System.Drawing.Point(10, 125);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1, 282);
+            this.panel1.TabIndex = 4;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.panel2.Location = new System.Drawing.Point(190, 125);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(1, 282);
+            this.panel2.TabIndex = 5;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.panel3.Location = new System.Drawing.Point(11, 406);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(180, 1);
+            this.panel3.TabIndex = 6;
+            // 
+            // BtnDrop
+            // 
+            this.BtnDrop.Location = new System.Drawing.Point(66, 51);
+            this.BtnDrop.Name = "BtnDrop";
+            this.BtnDrop.Size = new System.Drawing.Size(75, 23);
+            this.BtnDrop.TabIndex = 7;
+            this.BtnDrop.Text = "Drop";
+            this.BtnDrop.UseVisualStyleBackColor = true;
+            this.BtnDrop.Click += new System.EventHandler(this.BtnDrop_Click);
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(204, 483);
+            this.Controls.Add(this.BtnDrop);
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.BtnPause);
+            this.Controls.Add(this.BtnLeft);
+            this.Controls.Add(this.BtnRight);
+            this.Name = "Form1";
+            this.Text = "Tetris";
+            this.Load += new System.EventHandler(this.Form1_Load);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.Button BtnRight;
+        private System.Windows.Forms.Button BtnLeft;
+        private System.Windows.Forms.Button BtnPause;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Button BtnDrop;
     }
 }
 

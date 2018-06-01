@@ -12,9 +12,41 @@ namespace TetrisOOP
 {
     public partial class Form1 : Form
     {
+        private Tetris tetris;
+
         public Form1()
         {
             InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            tetris = new Tetris(this, 9, 14);
+            tetris.Start();
+        }
+
+
+        private void BtnPause_Click(object sender, EventArgs e)
+        {
+            tetris.Toggle();
+        }
+
+        private void BtnDrop_Click(object sender, EventArgs e)
+        {
+            tetris.Drop();
+        }
+
+        private void BtnLeft_Click(object sender, EventArgs e)
+        {
+            BtnLeft.Enabled = tetris.BlockLeft();
+            BtnRight.Enabled = true;
+
+        }
+
+        private void BtnRight_Click(object sender, EventArgs e)
+        {
+            BtnRight.Enabled = tetris.BlockRight();
+            BtnLeft.Enabled = true;
         }
     }
 }
