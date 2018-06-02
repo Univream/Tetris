@@ -41,12 +41,12 @@ namespace TetrisOOP
 
         public void MoveLeft()
         {
-            p.Left += _size;
+            p.Left -= _size;
         }
     
         public void MoveRight()
         {
-            p.Left -= _size;
+            p.Left += _size;
         }
 
         /// <summary>

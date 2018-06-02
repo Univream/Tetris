@@ -17,6 +17,8 @@ namespace TetrisOOP
 
         private Timer timer;
 
+        private EventHandler handler;
+        
         /// <summary>
         /// Initializes the Tetris game
         /// </summary>
@@ -50,7 +52,7 @@ namespace TetrisOOP
             {
                 _map.Check();
                 _map.AddBlock();
-                var handler = NewBlock;
+                handler = NewBlock;
                 handler(this, EventArgs.Empty);
             }
         }
@@ -60,7 +62,7 @@ namespace TetrisOOP
             timer.Enabled = false;
             _map.DropBlock();
             timer.Enabled = true;
-            var handler = NewBlock;
+            handler = NewBlock;
             handler(this, EventArgs.Empty);
         }
 
@@ -73,8 +75,7 @@ namespace TetrisOOP
         {
             return _map.BlockRight();
         }
-
-
+        
         public event EventHandler NewBlock;
     }
 }

@@ -23,13 +23,17 @@ namespace TetrisOOP
         {
             tetris = new Tetris(this, 9, 14);
             tetris.Start();
-            tetris.NewBlock += new  EventHandler(newBlockOnMap);
+            tetris.NewBlock += new EventHandler(newBlockOnMap);
         }
 
 
         private void BtnPause_Click(object sender, EventArgs e)
         {
             tetris.Toggle();
+            if (BtnPause.Text == "Start")
+                BtnPause.Text = "Stop";
+            else
+                BtnPause.Text = "Start";
         }
 
         private void BtnDrop_Click(object sender, EventArgs e)
@@ -54,6 +58,35 @@ namespace TetrisOOP
         {
             BtnLeft.Enabled = true;
             BtnRight.Enabled = true;
+        }
+
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            //capture down arrow key
+            if (keyData == Keys.Down || keyData == Keys.Enter)
+            {
+                BtnDrop_Click(new object(), new EventArgs());
+                return true;
+            }
+            //capture left arrow key
+            if (keyData == Keys.Left)
+            {
+                BtnLeft_Click(new object(), new EventArgs());
+                return true;
+            }
+            //capture right arrow key
+            if (keyData == Keys.Right)
+            {
+                BtnRight_Click(new object(), new EventArgs()); 
+                return true;
+            }
+            if(keyData == Keys.Space)
+            {
+                BtnPause_Click(new object(), new EventArgs());
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }

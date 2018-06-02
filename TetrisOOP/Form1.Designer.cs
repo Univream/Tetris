@@ -2,6 +2,7 @@
 {
     partial class Form1
     {
+
         /// <summary>
         /// Erforderliche Designervariable.
         /// </summary>
@@ -39,54 +40,57 @@
             // 
             // BtnRight
             // 
-            this.BtnRight.Location = new System.Drawing.Point(11, 22);
+            this.BtnRight.Location = new System.Drawing.Point(117, 12);
             this.BtnRight.Name = "BtnRight";
-            this.BtnRight.Size = new System.Drawing.Size(75, 23);
+            this.BtnRight.Size = new System.Drawing.Size(75, 33);
             this.BtnRight.TabIndex = 0;
+            this.BtnRight.TabStop = false;
             this.BtnRight.Text = "R";
             this.BtnRight.UseVisualStyleBackColor = true;
             this.BtnRight.Click += new System.EventHandler(this.BtnRight_Click);
             // 
             // BtnLeft
             // 
-            this.BtnLeft.Location = new System.Drawing.Point(117, 22);
+            this.BtnLeft.Location = new System.Drawing.Point(10, 12);
             this.BtnLeft.Name = "BtnLeft";
-            this.BtnLeft.Size = new System.Drawing.Size(75, 23);
+            this.BtnLeft.Size = new System.Drawing.Size(75, 33);
             this.BtnLeft.TabIndex = 1;
+            this.BtnLeft.TabStop = false;
             this.BtnLeft.Text = "L";
             this.BtnLeft.UseVisualStyleBackColor = true;
             this.BtnLeft.Click += new System.EventHandler(this.BtnLeft_Click);
             // 
             // BtnPause
             // 
-            this.BtnPause.Location = new System.Drawing.Point(66, 431);
+            this.BtnPause.Location = new System.Drawing.Point(66, 417);
             this.BtnPause.Name = "BtnPause";
-            this.BtnPause.Size = new System.Drawing.Size(75, 40);
+            this.BtnPause.Size = new System.Drawing.Size(75, 54);
             this.BtnPause.TabIndex = 3;
-            this.BtnPause.Text = "Pause";
+            this.BtnPause.TabStop = false;
+            this.BtnPause.Text = "Stop";
             this.BtnPause.UseVisualStyleBackColor = true;
             this.BtnPause.Click += new System.EventHandler(this.BtnPause_Click);
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.panel1.Location = new System.Drawing.Point(10, 125);
+            this.panel1.Location = new System.Drawing.Point(10, 127);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1, 282);
+            this.panel1.Size = new System.Drawing.Size(1, 284);
             this.panel1.TabIndex = 4;
             // 
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.panel2.Location = new System.Drawing.Point(190, 125);
+            this.panel2.Location = new System.Drawing.Point(190, 127);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1, 282);
+            this.panel2.Size = new System.Drawing.Size(1, 284);
             this.panel2.TabIndex = 5;
             // 
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.panel3.Location = new System.Drawing.Point(11, 406);
+            this.panel3.Location = new System.Drawing.Point(11, 410);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(180, 1);
             this.panel3.TabIndex = 6;
@@ -95,8 +99,9 @@
             // 
             this.BtnDrop.Location = new System.Drawing.Point(66, 51);
             this.BtnDrop.Name = "BtnDrop";
-            this.BtnDrop.Size = new System.Drawing.Size(75, 23);
+            this.BtnDrop.Size = new System.Drawing.Size(75, 50);
             this.BtnDrop.TabIndex = 7;
+            this.BtnDrop.TabStop = false;
             this.BtnDrop.Text = "Drop";
             this.BtnDrop.UseVisualStyleBackColor = true;
             this.BtnDrop.Click += new System.EventHandler(this.BtnDrop_Click);
@@ -113,6 +118,8 @@
             this.Controls.Add(this.BtnPause);
             this.Controls.Add(this.BtnLeft);
             this.Controls.Add(this.BtnRight);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.KeyPreview = true;
             this.Name = "Form1";
             this.Text = "Tetris";
             this.Load += new System.EventHandler(this.Form1_Load);

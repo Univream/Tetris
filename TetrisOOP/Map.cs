@@ -13,7 +13,6 @@ namespace TetrisOOP
     /// </summary>
     class Map
     {
-
         public Size size { get; set; }
 
         private Block[,] _blockMap;
@@ -27,8 +26,7 @@ namespace TetrisOOP
         private TetrisBlock _currentBlock;
 
         private Form _frm;
-
-
+        
         /// <summary>
         /// Initialzes a map
         /// </summary>
@@ -67,8 +65,6 @@ namespace TetrisOOP
             _blockMap[0, 5] = _currentBlock;
             _bRow = 0;
             _bColumn = 5;
-
-           
         }
 
         public bool MoveBlock()
@@ -151,11 +147,18 @@ namespace TetrisOOP
 
         public void PullBlockDown(int r, int c)
         {
-            while (_blockMap[--r, c] is TetrisBlock)
+            try
             {
-                ((TetrisBlock)_blockMap[r, c]).MoveDown();
-                _blockMap[r + 1, c] = _blockMap[r, c];
-                MakeEmpty(r, c);
+                while (_blockMap[--r, c] is TetrisBlock)
+                {
+                    ((TetrisBlock)_blockMap[r, c]).MoveDown();
+                    _blockMap[r + 1, c] = _blockMap[r, c];
+                    MakeEmpty(r, c);
+                }
+            }
+            catch(IndexOutOfRangeException)
+            {
+                return;
             }
         }
 
