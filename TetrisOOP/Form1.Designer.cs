@@ -36,11 +36,12 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.BtnDrop = new System.Windows.Forms.Button();
+            this.Lbllevel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // BtnRight
             // 
-            this.BtnRight.Location = new System.Drawing.Point(117, 12);
+            this.BtnRight.Location = new System.Drawing.Point(117, 36);
             this.BtnRight.Name = "BtnRight";
             this.BtnRight.Size = new System.Drawing.Size(75, 33);
             this.BtnRight.TabIndex = 0;
@@ -51,7 +52,7 @@
             // 
             // BtnLeft
             // 
-            this.BtnLeft.Location = new System.Drawing.Point(10, 12);
+            this.BtnLeft.Location = new System.Drawing.Point(11, 36);
             this.BtnLeft.Name = "BtnLeft";
             this.BtnLeft.Size = new System.Drawing.Size(75, 33);
             this.BtnLeft.TabIndex = 1;
@@ -97,20 +98,31 @@
             // 
             // BtnDrop
             // 
-            this.BtnDrop.Location = new System.Drawing.Point(66, 51);
+            this.BtnDrop.Location = new System.Drawing.Point(66, 88);
             this.BtnDrop.Name = "BtnDrop";
-            this.BtnDrop.Size = new System.Drawing.Size(75, 50);
+            this.BtnDrop.Size = new System.Drawing.Size(75, 38);
             this.BtnDrop.TabIndex = 7;
             this.BtnDrop.TabStop = false;
             this.BtnDrop.Text = "Drop";
             this.BtnDrop.UseVisualStyleBackColor = true;
             this.BtnDrop.Click += new System.EventHandler(this.BtnDrop_Click);
             // 
+            // Lbllevel
+            // 
+            this.Lbllevel.AutoSize = true;
+            this.Lbllevel.Location = new System.Drawing.Point(96, 9);
+            this.Lbllevel.Name = "Lbllevel";
+            this.Lbllevel.Size = new System.Drawing.Size(13, 13);
+            this.Lbllevel.TabIndex = 8;
+            this.Lbllevel.Text = "0";
+            this.Lbllevel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(204, 483);
+            this.Controls.Add(this.Lbllevel);
             this.Controls.Add(this.BtnDrop);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
@@ -124,6 +136,7 @@
             this.Text = "Tetris";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -136,6 +149,7 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button BtnDrop;
+        private System.Windows.Forms.Label Lbllevel;
     }
 }
 

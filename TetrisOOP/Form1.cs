@@ -21,9 +21,8 @@ namespace TetrisOOP
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            tetris = new Tetris(this, 9, 14);
+            tetris = new Tetris(this, 9, 14, ref Lbllevel);
             tetris.Start();
-            tetris.NewBlock += new EventHandler(newBlockOnMap);
         }
 
 
@@ -43,23 +42,15 @@ namespace TetrisOOP
 
         private void BtnLeft_Click(object sender, EventArgs e)
         {
-            BtnLeft.Enabled = tetris.BlockLeft();
-            BtnRight.Enabled = true;
+            tetris.BlockLeft();
 
         }
 
         private void BtnRight_Click(object sender, EventArgs e)
         {
-            BtnRight.Enabled = tetris.BlockRight();
-            BtnLeft.Enabled = true;
+            tetris.BlockRight();
         }
-
-        private void newBlockOnMap(object sender, EventArgs e)
-        {
-            BtnLeft.Enabled = true;
-            BtnRight.Enabled = true;
-        }
-
+        
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
