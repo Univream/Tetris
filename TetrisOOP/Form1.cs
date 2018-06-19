@@ -23,8 +23,33 @@ namespace TetrisOOP
         {
             tetris = new Tetris(this, 9, 14, ref Lbllevel);
             tetris.Start();
+            tetris.GameOver += Tetris_GameOver;
         }
 
+        /// <summary>
+        /// Restarts the Form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Restart(object sender, EventArgs e)
+        {
+            Controls.Clear();
+            InitializeComponent();
+            Form1_Load(sender, e);
+        }
+
+        private void Tetris_GameOver(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Game over - Try again", "Tetris", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                Restart(sender, e);
+            }
+            else
+            {
+                this.Close();
+            }
+
+        }
 
         private void BtnPause_Click(object sender, EventArgs e)
         {

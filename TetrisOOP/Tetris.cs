@@ -12,11 +12,10 @@ namespace TetrisOOP
     /// </summary>
     class Tetris
     {
+
         private Map _map;
 
         private Timer timer;
-
-        private Form _frm;
 
         private Label _levelLabel;
 
@@ -44,8 +43,7 @@ namespace TetrisOOP
         /// <param name="blockSize"></param>
         public Tetris(Form frm, int mapWidth, int mapHeight, ref Label label)
         {
-            _frm = frm;
-            _map = new Map(mapWidth, mapHeight, 20, _frm);
+            _map = new Map(mapWidth, mapHeight, 20, frm);
             _map.AddBlock();
             timer = new Timer();
             timer.Enabled = false;
@@ -55,11 +53,17 @@ namespace TetrisOOP
             timer.Tick += new EventHandler(Tick);
         }
 
+        /// <summary>
+        /// starts Tetris
+        /// </summary>
         public void Start()
         {
             timer.Enabled = true;
         }
 
+        /// <summary>
+        /// Toggles between game stop and start
+        /// </summary>
         public void Toggle()
         {
             timer.Enabled = !timer.Enabled;
@@ -70,23 +74,10 @@ namespace TetrisOOP
             if (!_map.MoveBlock())
             {
                 level = _map.Check();
-                if(_map.gameOver())
+                if(_map.GameOver())
                 {
                     timer.Enabled = false;
-                    // Makes sure that the first block on the map is empty
-                    
-                    
-                    if (MessageBox.Show("Game Over - Try again", "You lost", MessageBoxButtons.OKCancel) == DialogResult.OK)
-                    {
-                        _map.Clear();
-                        level = 0;
-                        _map.AddBlock();
-                        timer.Enabled = true;
-                    }
-                    else
-                    {
-                        _frm.Close();
-                    }
+                    GameOver(this, new EventArgs());
                 }
                 else
                 {
@@ -95,6 +86,9 @@ namespace TetrisOOP
             }
         }
 
+        /// <summary>
+        /// Drops the currently active block
+        /// </summary>
         public void Drop()
         {
             timer.Enabled = false;
@@ -103,15 +97,26 @@ namespace TetrisOOP
             timer.Enabled = true;
         }
 
+        /// <summary>
+        /// Moves currently active block left
+        /// </summary>
         public void BlockLeft()
         {
             _map.BlockLeft();
         }
 
+        /// <summary>
+        /// Moves currently active block right
+        /// </summary>
         public void BlockRight()
         {
             _map.BlockRight();
         }
+
+        /// <summary>
+        /// Gets fired when the game is over
+        /// </summary>
+        public event EventHandler GameOver;
         
     }
 }

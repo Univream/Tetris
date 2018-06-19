@@ -24,12 +24,12 @@ namespace TetrisOOP
         /// </summary>
         /// <param name="map">Game map</param>
         /// <param name="frm">The form the game should be played on</param>
-        public TetrisBlock(Map map, Form frm) : base(map.blockSize)
+        public TetrisBlock(Map map, Form frm) : base(map.BlockSize)
         {
             color = colors[r.Next(0, colors.Length)];
             p.BackColor = color;
-            p.Size = new Size(map.blockSize, map.blockSize);
-            p.Location = new Point(map.size.Width / 2, 130);
+            p.Size = new Size(map.BlockSize, map.BlockSize);
+            p.Location = new Point(map.Size.Width / 2, 130);
             _frm = frm;
             frm.Controls.Add(p);
         }

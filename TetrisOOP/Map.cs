@@ -16,7 +16,7 @@ namespace TetrisOOP
         /// <summary>
         /// Size in pixel
         /// </summary>
-        public Size size { get; set; }
+        public Size Size { get; set; }
 
         private Block[,] _blockMap;
 
@@ -27,13 +27,13 @@ namespace TetrisOOP
         /// <summary>
         /// Block dimemsion in pixel
         /// </summary>
-        public int blockSize { get; set; }
+        public int BlockSize { get; set; }
 
         private TetrisBlock _currentBlock;
 
         private Form _frm;
 
-        private int deletedBlockSets = 0;
+        private int _deletedBlockSets = 0;
         
         /// <summary>
         /// Initialzes a map
@@ -44,29 +44,32 @@ namespace TetrisOOP
         /// <param name="frm"></param>
         public Map(int widthMap, int heightMap, int block, Form frm)
         {
-            size = new Size(widthMap * block, heightMap * block);
-            this.blockSize = block;
+            Size = new Size(widthMap * block, heightMap * block);
+            this.BlockSize = block;
             _blockMap = new Block[heightMap + 1, widthMap + 2];
             _frm = frm;
 
             // intialize the map
             for(int r = 0; r < _blockMap.GetUpperBound(0); r++)
             {
-                _blockMap[r, 0] = new EdgeBlock(blockSize);
+                _blockMap[r, 0] = new EdgeBlock(BlockSize);
                 for(int c = 1; c < _blockMap.GetUpperBound(1); c++)
                 {
                     MakeEmpty(r, c);
                 }
 
-                _blockMap[r, widthMap + 1] = new EdgeBlock(blockSize);
+                _blockMap[r, widthMap + 1] = new EdgeBlock(BlockSize);
             }
 
             for(int c = 0; c <= _blockMap.GetUpperBound(1); c++)
             {
-                _blockMap[heightMap, c] = new EdgeBlock(blockSize);
+                _blockMap[heightMap, c] = new EdgeBlock(BlockSize);
             }
         }
 
+        /// <summary>
+        /// Adds a TetrisBlock to the map
+        /// </summary>
         public void AddBlock()
         {
             _currentBlock = new TetrisBlock(this, _frm);
@@ -74,6 +77,10 @@ namespace TetrisOOP
             _bColumn = 5;
         }
 
+        /// <summary>
+        /// Moves the current block one step
+        /// </summary>
+        /// <returns></returns>
         public bool MoveBlock()
         {
             if( _blockMap[_bRow + 1, _bColumn] is EmptyBlock)
@@ -87,11 +94,20 @@ namespace TetrisOOP
             
         }
 
+        /// <summary>
+        /// Turns the specified TetrisBlock into an EmptyBlock
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="c"></param>
         private void MakeEmpty(int r, int c)
         {
-            _blockMap[r, c] = new EmptyBlock(blockSize); 
+            _blockMap[r, c] = new EmptyBlock(BlockSize); 
         }
 
+        /// <summary>
+        /// Checks for 3 blocks which have the same color and are next to each other
+        /// </summary>
+        /// <returns></returns>
         public int Check()
         {
             for (int row = 2; row < _blockMap.GetUpperBound(0); row++)
@@ -102,10 +118,15 @@ namespace TetrisOOP
                 for (int col = 0; col < _blockMap.GetUpperBound(1) - 2; col++)
                     CheckHorizontal(row, col);
 
-            return deletedBlockSets;
+            return _deletedBlockSets;
         }
 
-        public void CheckVertical(int r, int c)
+        /// <summary>
+        /// Checks for vertical match
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="c"></param>
+        private void CheckVertical(int r, int c)
         {
             var block = _blockMap[r, c];
             // block abbove
@@ -123,12 +144,17 @@ namespace TetrisOOP
                     MakeEmpty(r, c);
                     MakeEmpty(r - 1, c);
                     MakeEmpty(r - 2, c);
-                    deletedBlockSets++;
+                    _deletedBlockSets++;
                 }
             }
         }
 
-        public void CheckHorizontal(int r, int c)
+        /// <summary>
+        /// Checks the for horizontal match
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="c"></param>
+        private void CheckHorizontal(int r, int c)
         {
             var block = _blockMap[r, c];
             // block abbove
@@ -149,12 +175,17 @@ namespace TetrisOOP
                     PullBlockDown(r, c);
                     PullBlockDown(r, c + 1);
                     PullBlockDown(r, c + 2);
-                    deletedBlockSets++;
+                    _deletedBlockSets++;
                     Check();
                 }
             }
         }
 
+        /// <summary>
+        /// Moves the block above the specified one down
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="c"></param>
         public void PullBlockDown(int r, int c)
         {
             try
@@ -172,6 +203,9 @@ namespace TetrisOOP
             }
         }
 
+        /// <summary>
+        /// Moves the current block as far down as it can
+        /// </summary>
         public void DropBlock()
         {
             while(MoveBlock())
@@ -179,6 +213,9 @@ namespace TetrisOOP
             AddBlock();
         }
 
+        /// <summary>
+        /// Moves the current block left
+        /// </summary>
         public void BlockLeft()
         {
             if(_blockMap[_bRow, _bColumn - 1] is EmptyBlock)
@@ -190,6 +227,9 @@ namespace TetrisOOP
             }
         }
 
+        /// <summary>
+        /// Moves the current block right
+        /// </summary>
         public void BlockRight()
         {
             if(_blockMap[_bRow, _bColumn + 1] is EmptyBlock)
@@ -201,6 +241,9 @@ namespace TetrisOOP
             }
         }
 
+        /// <summary>
+        /// Clears the map
+        /// </summary>
         public void Clear()
         {
             for (int row = 0; row < _blockMap.GetUpperBound(0); row++)
@@ -211,11 +254,15 @@ namespace TetrisOOP
                         ((TetrisBlock)_blockMap[row, col]).Remove();
                         MakeEmpty(row, col);
                     }
-                    deletedBlockSets = 0;
+                    _deletedBlockSets = 0;
                 }
         }
 
-        public bool gameOver()
+        /// <summary>
+        /// Checks whether the game is over
+        /// </summary>
+        /// <returns>True if game is over</returns>
+        public bool GameOver()
         {
             if(_blockMap[0, 5] is EmptyBlock)
             {
