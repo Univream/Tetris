@@ -8,30 +8,26 @@ using System.Windows.Forms;
 
 namespace TetrisOOP
 {
-
-    class TetrisBlock : Block
+    class ShapeBlock : Block
     {
-        private Panel p = new Panel();
-
         private Form _frm;
-        
-        public static Color[] colors = { Color.Red, Color.Blue, Color.Green, Color.Gray, Color.Pink };
-        
-        private Random r = new Random();
 
-        /// <summary>
-        /// Initialize a Tetris block on a given map
-        /// </summary>
-        /// <param name="map">Game map</param>
-        /// <param name="frm">The form the game should be played on</param>
-        public TetrisBlock(Map map, Form frm) : base(map.BlockSize)
+        private Map _map;
+
+        public Panel p = new Panel();
+
+        public ShapeBlock(Map map, Form frm) : base(map.BlockSize)
         {
-            color = colors[r.Next(0, colors.Length)];
+            _map = map;
             p.BackColor = color;
             p.Size = new Size(map.BlockSize, map.BlockSize);
-            p.Location = new Point(map.Size.Width / 2, 130);
             _frm = frm;
-            frm.Controls.Add(p);
+        }
+
+        public void AddToMap(int rowBlocks, int colBlocks)
+        {
+            p.Location = new Point((_map.BlockSize * colBlocks) - 10, 130 + (_map.BlockSize * rowBlocks));
+            _frm.Controls.Add(p);
         }
 
         public void MoveDown()
@@ -58,15 +54,12 @@ namespace TetrisOOP
         {
             p.Left -= _size;
         }
-    
+
         public void MoveRight()
         {
             p.Left += _size;
         }
 
-        /// <summary>
-        /// Removes underlying graphical panel from the form
-        /// </summary>
         public void Remove()
         {
             _frm.Controls.Remove(p);

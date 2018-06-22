@@ -18,6 +18,8 @@ namespace TetrisOOP
         /// </summary>
         public Size Size { get; set; }
 
+        // TODO Cor of shape
+
         private Block[,] _blockMap;
 
         private int _bRow;
@@ -31,6 +33,8 @@ namespace TetrisOOP
 
         private TetrisBlock _currentBlock;
 
+        private Shape _shape;
+
         private Form _frm;
 
         private int _deletedBlockSets = 0;
@@ -40,7 +44,7 @@ namespace TetrisOOP
         /// </summary>
         /// <param name="widthMap">width in blocks</param>
         /// <param name="heightMap">height blocks</param>
-        /// <param name="blockDim">height </param>
+        /// <param name="blockDim">height</param>
         /// <param name="frm"></param>
         public Map(int widthMap, int heightMap, int block, Form frm)
         {
@@ -67,6 +71,20 @@ namespace TetrisOOP
             }
         }
 
+        public void PlaceBlock(TetrisBlock block, int left, int top)
+        {
+            if (top >= 14 || left >= 9)
+            {
+                throw new IndexOutOfRangeException("The specified vector was out of the maps range");
+            }
+            else
+            {
+                _blockMap[top, left] = block;
+                block.MoveDown(top);
+                block.MoveLeft(left);
+            }
+        }
+
         /// <summary>
         /// Adds a TetrisBlock to the map
         /// </summary>
@@ -74,7 +92,45 @@ namespace TetrisOOP
         {
             _currentBlock = new TetrisBlock(this, _frm);
             _bRow = 0;
-            _bColumn = 5;
+            _bColumn = 2;
+        }
+
+        public void AddShape(Shape shape)
+        { 
+            _shape = shape;
+            _bRow = 0;
+            _bColumn = 3;
+
+            // define start redern point
+            for (int i = 0; i <= _shape.ShapeMap.GetUpperBound(0); i++)
+            {
+                for (int j = 0; j <= _shape.ShapeMap.GetUpperBound(1); j++)
+                {
+                    if (_shape.ShapeMap[i, j] is ShapeBlock)
+                    {
+                        ((ShapeBlock)_shape.ShapeMap[i, j]).AddToMap(_bRow + i, _bColumn + j);
+                    }
+
+                    _shape.ShapeMap[i, j].MapPositionX = _bColumn + j;
+                    _shape.ShapeMap[i, j].MapPositionY = _bRow + i;
+                }
+            }
+        }
+
+        public void RenderShape()
+        {
+            for (int i = 0; i <= _shape.ShapeMap.GetUpperBound(0); i++)
+            {
+                for (int j = 0; j <= _shape.ShapeMap.GetUpperBound(1); j++)
+                {
+                    _blockMap[_bRow, _bColumn] = _shape.ShapeMap[i, j];
+
+                    if (_shape.ShapeMap[i, j] is ShapeBlock)
+                    {
+                        ((ShapeBlock)_shape.ShapeMap[i, j]).AddToMap(((ShapeBlock)_shape.ShapeMap[i, j]).MapPositionX, ((ShapeBlock)_shape.ShapeMap[i, j]).MapPositionY);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -90,6 +146,50 @@ namespace TetrisOOP
                 return true;
             }
             _blockMap[_bRow, _bColumn] = _currentBlock;
+            return false;
+        }
+
+        public bool MoveShape()
+        {
+            if (_shape != null)
+            {
+
+                for (int i = _shape.ShapeMap.GetUpperBound(0); i >= 0; i--)
+                {
+                    for (int j = 0; j <= _shape.ShapeMap.GetUpperBound(1); j++)
+                    {
+                        if (!(_blockMap[_shape.ShapeMap[i, j].MapPositionY + 1, _shape.ShapeMap[i, j].MapPositionX] is EmptyBlock))
+                        {
+
+                            for (int k = _shape.ShapeMap.GetUpperBound(0); k >= 0; k--)
+                            {
+                                for (int l = 0; l <= _shape.ShapeMap.GetUpperBound(1); l++)
+                                {
+                                    _blockMap[_shape.ShapeMap[k, l].MapPositionY, _shape.ShapeMap[k, l].MapPositionX] = _shape.ShapeMap[k, l];
+                                }
+                            }
+                            return false;
+                        }
+                    }
+                }
+                
+
+                for (int i = _shape.ShapeMap.GetUpperBound(0); i >= 0; i--)
+                {
+                    for (int j = 0; j <= _shape.ShapeMap.GetUpperBound(1); j++)
+                    {
+                        if (_shape.ShapeMap[i, j] is ShapeBlock)
+                        {
+                            if (_blockMap[_shape.ShapeMap[i, j].MapPositionY + 1, _shape.ShapeMap[i, j].MapPositionX] is EmptyBlock)
+                            {
+                                ((ShapeBlock)_shape.ShapeMap[i, j]).MoveDown();
+                                ((ShapeBlock)_shape.ShapeMap[i, j]).MapPositionY++;
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
             return false;
             
         }
@@ -186,7 +286,7 @@ namespace TetrisOOP
         /// </summary>
         /// <param name="r"></param>
         /// <param name="c"></param>
-        public void PullBlockDown(int r, int c)
+        private void PullBlockDown(int r, int c)
         {
             try
             {
@@ -241,9 +341,60 @@ namespace TetrisOOP
             }
         }
 
+        public void ShapeRight()
+        {
+            for (int i = _shape.ShapeMap.GetUpperBound(0); i >= 0; i--)
+            {
+                if (!(_blockMap[_shape.ShapeMap[i, _shape.ShapeMap.GetUpperBound(1)].MapPositionY, _shape.ShapeMap[i, _shape.ShapeMap.GetUpperBound(1)].MapPositionX + 1] is EmptyBlock))
+                {
+                    return;
+                }
+            }
+
+
+            for (int i = _shape.ShapeMap.GetUpperBound(0); i >= 0; i--)
+            {
+                for (int j = 0; j <= _shape.ShapeMap.GetUpperBound(1); j++)
+                {
+                    if (_shape.ShapeMap[i, j] is ShapeBlock)
+                    {
+                        
+                        ((ShapeBlock)_shape.ShapeMap[i, j]).MoveRight();
+                        ((ShapeBlock)_shape.ShapeMap[i, j]).MapPositionX++;
+                        
+                    }
+                }
+            }
+        }
+
+        public void ShapeLeft()
+        {
+            for (int i = _shape.ShapeMap.GetUpperBound(0); i >= 0; i--)
+            {
+                if (!(_blockMap[_shape.ShapeMap[i, 0].MapPositionY, _shape.ShapeMap[i, 0].MapPositionX - 1] is EmptyBlock))
+                {
+                    return;
+                }
+            }
+
+            for (int i = _shape.ShapeMap.GetUpperBound(0); i >= 0; i--)
+            {
+                for (int j = 0; j <= _shape.ShapeMap.GetUpperBound(1); j++)
+                {
+                    if (_shape.ShapeMap[i, j] is ShapeBlock)
+                    {
+
+                        ((ShapeBlock)_shape.ShapeMap[i, j]).MoveLeft();
+                        ((ShapeBlock)_shape.ShapeMap[i, j]).MapPositionX--;
+
+                    }
+                }
+            }
+        }
+
         /// <summary>
-        /// Clears the map
-        /// </summary>
+    /// Clears the map
+    /// </summary>
         public void Clear()
         {
             for (int row = 0; row < _blockMap.GetUpperBound(0); row++)
@@ -264,7 +415,7 @@ namespace TetrisOOP
         /// <returns>True if game is over</returns>
         public bool GameOver()
         {
-            if(_blockMap[0, 5] is EmptyBlock)
+            if(_blockMap[0, 3] is EmptyBlock)
             {
                 return false;
             }

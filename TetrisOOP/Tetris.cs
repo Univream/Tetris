@@ -12,10 +12,13 @@ namespace TetrisOOP
     /// </summary>
     class Tetris
     {
+        private Form _frm;
 
-        private Map _map;
+        private  Map _map;
 
         private Timer timer;
+
+        private Shape[] _shapes;
 
         private Label _levelLabel;
 
@@ -43,14 +46,21 @@ namespace TetrisOOP
         /// <param name="blockSize"></param>
         public Tetris(Form frm, int mapWidth, int mapHeight, ref Label label)
         {
+            _frm = frm;
             _map = new Map(mapWidth, mapHeight, 20, frm);
-            _map.AddBlock();
+
+            _shapes = new Shape[]
+            {
+               new Shape(new Block[,] { { new ShapeBlock(_map, _frm), new ShapeBlock(_map, _frm) }, { new EmptyBlock(_map.BlockSize), new ShapeBlock(_map, _frm) } })
+            };
+
             timer = new Timer();
             timer.Enabled = false;
             _levelLabel = label;
             level = 0;
             label.Text = level.ToString();
             timer.Tick += new EventHandler(Tick);
+
         }
 
         /// <summary>
@@ -71,7 +81,7 @@ namespace TetrisOOP
         
         private void Tick(object sender, EventArgs e)
         {
-            if (!_map.MoveBlock())
+            if (!_map.MoveShape())
             {
                 level = _map.Check();
                 if(_map.GameOver())
@@ -81,7 +91,8 @@ namespace TetrisOOP
                 }
                 else
                 {
-                    _map.AddBlock();
+                    _map.AddShape(new Shape(new Block[,] { { new ShapeBlock(_map, _frm), new ShapeBlock(_map, _frm) }, 
+                        { new EmptyBlock(_map.BlockSize), new ShapeBlock(_map, _frm) } }));
                 }
             }
         }
@@ -111,6 +122,22 @@ namespace TetrisOOP
         public void BlockRight()
         {
             _map.BlockRight();
+        }
+
+        /// <summary>
+        /// Moves currently active shape left
+        /// </summary>
+        public void ShapeLeft()
+        {
+            _map.ShapeLeft();
+        }
+
+        /// <summary>
+        /// Moves currently active shape right
+        /// </summary>
+        public void ShapeRight()
+        {
+            _map.ShapeRight();
         }
 
         /// <summary>

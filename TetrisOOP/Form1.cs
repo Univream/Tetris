@@ -67,13 +67,13 @@ namespace TetrisOOP
 
         private void BtnLeft_Click(object sender, EventArgs e)
         {
-            tetris.BlockLeft();
+            tetris.ShapeLeft();
 
         }
 
         private void BtnRight_Click(object sender, EventArgs e)
         {
-            tetris.BlockRight();
+            tetris.ShapeRight();
         }
         
 

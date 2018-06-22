@@ -12,7 +12,10 @@ namespace TetrisOOP
     {
         protected int _size;
 
-        public Color color { get; protected set; }
+        public int MapPositionX;
+        public int MapPositionY;
+
+        public Color color { get; set; }
 
         public Block(int size)
         {
