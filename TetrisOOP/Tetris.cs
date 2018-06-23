@@ -61,8 +61,22 @@ namespace TetrisOOP
                         { new EmptyBlock(_map.BlockSize), new ShapeBlock(_map, _frm) }, 
                         { new ShapeBlock(_map, _frm), new ShapeBlock(_map, _frm) }, 
                         { new EmptyBlock(_map.BlockSize), new ShapeBlock(_map, _frm) } }, _map); },
+                () => { return new Shape(
+                    new Block[,] {
+                        { new ShapeBlock(_map, _frm), new ShapeBlock(_map, _frm) },
+                        { new EmptyBlock(_map.BlockSize), new ShapeBlock(_map, _frm) },
+                        { new ShapeBlock(_map, _frm), new ShapeBlock(_map, _frm) } }, _map); },
+                () => { return new Shape(
+                    new Block[,] {
+                        { new ShapeBlock(_map, _frm), new ShapeBlock(_map, _frm) },
+                        { new EmptyBlock(_map.BlockSize), new ShapeBlock(_map, _frm) },
+                        { new ShapeBlock(_map, _frm), new ShapeBlock(_map, _frm) } }, _map); },
+                () => { return new Shape(
+                    new Block[,] {
+                        { new ShapeBlock(_map, _frm) },
+                        { new ShapeBlock(_map, _frm) },
+                        { new ShapeBlock(_map, _frm) } }, _map); }
             };
-
 
             timer = new Timer();
             timer.Enabled = false;
