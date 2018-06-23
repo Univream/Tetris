@@ -102,6 +102,16 @@ namespace TetrisOOP
                 BtnPause_Click(new object(), new EventArgs());
                 return true;
             }
+            if (keyData == Keys.A)
+            {
+                tetris.RotateLeft();
+                return true;
+            }
+            if (keyData == Keys.D)
+            {
+                tetris.RotateRight();
+                return true;
+            }
             return base.ProcessCmdKey(ref msg, keyData);
         }
     }

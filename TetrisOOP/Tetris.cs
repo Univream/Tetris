@@ -18,9 +18,10 @@ namespace TetrisOOP
 
         private Timer timer;
 
-        private Shape[] _shapes;
+        private Func<Shape>[] _shapes;
 
         private Label _levelLabel;
+        private Random r = new Random();
 
         private int _level = 0;
 
@@ -48,11 +49,20 @@ namespace TetrisOOP
         {
             _frm = frm;
             _map = new Map(mapWidth, mapHeight, 20, frm);
-
-            _shapes = new Shape[]
+            _shapes = new Func<Shape>[]
             {
-               new Shape(new Block[,] { { new ShapeBlock(_map, _frm), new ShapeBlock(_map, _frm) }, { new EmptyBlock(_map.BlockSize), new ShapeBlock(_map, _frm) } })
+                () => { return new Shape(
+                    new Block[,] { 
+                        { new ShapeBlock(_map, _frm), new ShapeBlock(_map, _frm) },
+                        { new EmptyBlock(_map.BlockSize), new ShapeBlock(_map, _frm) },
+                        { new EmptyBlock(_map.BlockSize), new ShapeBlock(_map, _frm) } }, _map); },
+                () => { return new Shape(
+                    new Block[,] { 
+                        { new EmptyBlock(_map.BlockSize), new ShapeBlock(_map, _frm) }, 
+                        { new ShapeBlock(_map, _frm), new ShapeBlock(_map, _frm) }, 
+                        { new EmptyBlock(_map.BlockSize), new ShapeBlock(_map, _frm) } }, _map); },
             };
+
 
             timer = new Timer();
             timer.Enabled = false;
@@ -91,8 +101,7 @@ namespace TetrisOOP
                 }
                 else
                 {
-                    _map.AddShape(new Shape(new Block[,] { { new ShapeBlock(_map, _frm), new ShapeBlock(_map, _frm) }, 
-                        { new EmptyBlock(_map.BlockSize), new ShapeBlock(_map, _frm) } }));
+                    _map.AddShape(_shapes[r.Next(_shapes.Length)].Invoke());
                 }
             }
         }
@@ -138,6 +147,18 @@ namespace TetrisOOP
         public void ShapeRight()
         {
             _map.ShapeRight();
+        }
+
+        public void RotateLeft()
+        {
+            _map.RotateLeft();
+            _map.RenderShape();
+        }
+
+        public void RotateRight()
+        {
+            _map.RotateRight();
+            _map.RenderShape();
         }
 
         /// <summary>

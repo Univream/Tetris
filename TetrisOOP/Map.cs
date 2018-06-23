@@ -18,13 +18,11 @@ namespace TetrisOOP
         /// </summary>
         public Size Size { get; set; }
 
-        // TODO Cor of shape
+        // Cors of shape
+        public int ShapePosCol = 3;
+        public int ShapePosRow = 0;
 
         private Block[,] _blockMap;
-
-        private int _bRow;
-
-        private int _bColumn;
 
         /// <summary>
         /// Block dimemsion in pixel
@@ -71,50 +69,20 @@ namespace TetrisOOP
             }
         }
 
-        public void PlaceBlock(TetrisBlock block, int left, int top)
-        {
-            if (top >= 14 || left >= 9)
-            {
-                throw new IndexOutOfRangeException("The specified vector was out of the maps range");
-            }
-            else
-            {
-                _blockMap[top, left] = block;
-                block.MoveDown(top);
-                block.MoveLeft(left);
-            }
-        }
-
         /// <summary>
         /// Adds a TetrisBlock to the map
         /// </summary>
         public void AddBlock()
         {
             _currentBlock = new TetrisBlock(this, _frm);
-            _bRow = 0;
-            _bColumn = 2;
         }
 
         public void AddShape(Shape shape)
         { 
             _shape = shape;
-            _bRow = 0;
-            _bColumn = 3;
 
             // define start redern point
-            for (int i = 0; i <= _shape.ShapeMap.GetUpperBound(0); i++)
-            {
-                for (int j = 0; j <= _shape.ShapeMap.GetUpperBound(1); j++)
-                {
-                    if (_shape.ShapeMap[i, j] is ShapeBlock)
-                    {
-                        ((ShapeBlock)_shape.ShapeMap[i, j]).AddToMap(_bRow + i, _bColumn + j);
-                    }
-
-                    _shape.ShapeMap[i, j].MapPositionX = _bColumn + j;
-                    _shape.ShapeMap[i, j].MapPositionY = _bRow + i;
-                }
-            }
+            RenderShape();
         }
 
         public void RenderShape()
@@ -123,14 +91,34 @@ namespace TetrisOOP
             {
                 for (int j = 0; j <= _shape.ShapeMap.GetUpperBound(1); j++)
                 {
-                    _blockMap[_bRow, _bColumn] = _shape.ShapeMap[i, j];
+                    _shape.ShapeMap[i, j].MapPositionX = ShapePosCol + j;
+                    _shape.ShapeMap[i, j].MapPositionY = ShapePosRow + i;
 
                     if (_shape.ShapeMap[i, j] is ShapeBlock)
                     {
-                        ((ShapeBlock)_shape.ShapeMap[i, j]).AddToMap(((ShapeBlock)_shape.ShapeMap[i, j]).MapPositionX, ((ShapeBlock)_shape.ShapeMap[i, j]).MapPositionY);
+                        ((ShapeBlock)_shape.ShapeMap[i, j]).AddToMap(_shape.ShapeMap[i, j].MapPositionX, _shape.ShapeMap[i, j].MapPositionY);
                     }
                 }
             }
+        }
+
+        public bool CheckIfRenderable(Block[,] ShapeMap)
+        {
+            for (int i = 0; i <= ShapeMap.GetUpperBound(0); i++)
+            {
+                for (int j = 0; j <= ShapeMap.GetUpperBound(1); j++)
+                {
+                    if (ShapeMap[i, j] is ShapeBlock)
+                    {
+                        if(!(_blockMap[ShapePosRow + i, ShapePosCol + j] is EmptyBlock))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            _shape.ShapeMap = ShapeMap;
+            return true;
         }
 
         /// <summary>
@@ -139,13 +127,13 @@ namespace TetrisOOP
         /// <returns></returns>
         public bool MoveBlock()
         {
-            if( _blockMap[_bRow + 1, _bColumn] is EmptyBlock)
+            if( _blockMap[ShapePosRow + 1, ShapePosCol] is EmptyBlock)
             {
                 _currentBlock.MoveDown();
-                _bRow++;
+                ShapePosRow++;
                 return true;
             }
-            _blockMap[_bRow, _bColumn] = _currentBlock;
+            _blockMap[ShapePosRow, ShapePosCol] = _currentBlock;
             return false;
         }
 
@@ -153,45 +141,30 @@ namespace TetrisOOP
         {
             if (_shape != null)
             {
-
-                for (int i = _shape.ShapeMap.GetUpperBound(0); i >= 0; i--)
+                ShapePosRow++;
+                if (!CheckIfRenderable(_shape.ShapeMap))
                 {
-                    for (int j = 0; j <= _shape.ShapeMap.GetUpperBound(1); j++)
+                    for (int k = _shape.ShapeMap.GetUpperBound(0); k >= 0; k--)
                     {
-                        if (!(_blockMap[_shape.ShapeMap[i, j].MapPositionY + 1, _shape.ShapeMap[i, j].MapPositionX] is EmptyBlock))
+                        for (int l = 0; l <= _shape.ShapeMap.GetUpperBound(1); l++)
                         {
-
-                            for (int k = _shape.ShapeMap.GetUpperBound(0); k >= 0; k--)
+                            if (_shape.ShapeMap[k, l] is ShapeBlock)
                             {
-                                for (int l = 0; l <= _shape.ShapeMap.GetUpperBound(1); l++)
-                                {
-                                    _blockMap[_shape.ShapeMap[k, l].MapPositionY, _shape.ShapeMap[k, l].MapPositionX] = _shape.ShapeMap[k, l];
-                                }
-                            }
-                            return false;
+                                _blockMap[_shape.ShapeMap[k, l].MapPositionY, _shape.ShapeMap[k, l].MapPositionX] = (ShapeBlock)_shape.ShapeMap[k, l];
+                            }   
                         }
                     }
+
+                    // Reset startpoint
+                    ShapePosCol = 3;
+                    ShapePosRow = 0;
+                    return false;
                 }
                 
-
-                for (int i = _shape.ShapeMap.GetUpperBound(0); i >= 0; i--)
-                {
-                    for (int j = 0; j <= _shape.ShapeMap.GetUpperBound(1); j++)
-                    {
-                        if (_shape.ShapeMap[i, j] is ShapeBlock)
-                        {
-                            if (_blockMap[_shape.ShapeMap[i, j].MapPositionY + 1, _shape.ShapeMap[i, j].MapPositionX] is EmptyBlock)
-                            {
-                                ((ShapeBlock)_shape.ShapeMap[i, j]).MoveDown();
-                                ((ShapeBlock)_shape.ShapeMap[i, j]).MapPositionY++;
-                            }
-                        }
-                    }
-                }
+                RenderShape();
                 return true;
             }
             return false;
-            
         }
 
         /// <summary>
@@ -211,16 +184,16 @@ namespace TetrisOOP
         public int Check()
         {
             for (int row = 2; row < _blockMap.GetUpperBound(0); row++)
-                for (int col = 0; col < _blockMap.GetUpperBound(1); col++)
+                for (int col = 1; col < _blockMap.GetUpperBound(1); col++)
                     CheckVertical(row, col);
 
             for (int row = 0; row < _blockMap.GetUpperBound(0); row++)
-                for (int col = 0; col < _blockMap.GetUpperBound(1) - 2; col++)
+                for (int col = 1; col < _blockMap.GetUpperBound(1) - 2; col++)
                     CheckHorizontal(row, col);
 
             return _deletedBlockSets;
         }
-
+  
         /// <summary>
         /// Checks for vertical match
         /// </summary>
@@ -229,18 +202,18 @@ namespace TetrisOOP
         private void CheckVertical(int r, int c)
         {
             var block = _blockMap[r, c];
-            // block abbove
+            // one block abbove
             var block1 = _blockMap[r - 1, c];
-            // block abbove
+            // two block abbove
             var block2 = _blockMap[r - 2, c];
-
-            if (block is TetrisBlock && block1 is TetrisBlock && block2 is TetrisBlock)
+            
+            if (block is ShapeBlock && block1 is ShapeBlock && block2 is ShapeBlock)
             {
                 if(block.color == block1.color && block.color == block2.color)
                 {
-                    ((TetrisBlock)block).Remove();
-                    ((TetrisBlock)block1).Remove();
-                    ((TetrisBlock)block2).Remove();
+                    ((ShapeBlock)block).Remove();
+                    ((ShapeBlock)block1).Remove();
+                    ((ShapeBlock)block2).Remove();
                     MakeEmpty(r, c);
                     MakeEmpty(r - 1, c);
                     MakeEmpty(r - 2, c);
@@ -262,13 +235,13 @@ namespace TetrisOOP
             // block abbove
             var block2 = _blockMap[r, c + 2];
 
-            if (block is TetrisBlock && block1 is TetrisBlock && block2 is TetrisBlock)
+            if (block is ShapeBlock && block1 is ShapeBlock && block2 is ShapeBlock)
             {
                 if (block.color == block1.color && block.color == block2.color)
                 {
-                    ((TetrisBlock)block).Remove();
-                    ((TetrisBlock)block1).Remove();
-                    ((TetrisBlock)block2).Remove();
+                    ((ShapeBlock)block).Remove();
+                    ((ShapeBlock)block1).Remove();
+                    ((ShapeBlock)block2).Remove();
                     MakeEmpty(r, c);
                     MakeEmpty(r, c + 1);
                     MakeEmpty(r, c + 2);
@@ -290,9 +263,9 @@ namespace TetrisOOP
         {
             try
             {
-                while (_blockMap[--r, c] is TetrisBlock)
+                while (_blockMap[--r, c] is ShapeBlock)
                 {
-                    ((TetrisBlock)_blockMap[r, c]).MoveDown();
+                    ((ShapeBlock)_blockMap[r, c]).MoveDown();
                     _blockMap[r + 1, c] = _blockMap[r, c];
                     MakeEmpty(r, c);
                 }
@@ -318,12 +291,12 @@ namespace TetrisOOP
         /// </summary>
         public void BlockLeft()
         {
-            if(_blockMap[_bRow, _bColumn - 1] is EmptyBlock)
+            if(_blockMap[ShapePosRow, ShapePosCol - 1] is EmptyBlock)
             {
                 _currentBlock.MoveLeft();
-                _blockMap[_bRow, _bColumn - 1] = _blockMap[_bRow, _bColumn];
-                MakeEmpty(_bRow, _bColumn);
-                _bColumn--;
+                _blockMap[ShapePosRow, ShapePosCol - 1] = _blockMap[ShapePosRow, ShapePosCol];
+                MakeEmpty(ShapePosRow, ShapePosCol);
+                ShapePosCol--;
             }
         }
 
@@ -332,12 +305,12 @@ namespace TetrisOOP
         /// </summary>
         public void BlockRight()
         {
-            if(_blockMap[_bRow, _bColumn + 1] is EmptyBlock)
+            if(_blockMap[ShapePosRow, ShapePosCol + 1] is EmptyBlock)
             {
                 _currentBlock.MoveRight();
-                _blockMap[_bRow, _bColumn + 1] = _blockMap[_bRow, _bColumn];
-                MakeEmpty(_bRow, _bColumn);
-                _bColumn++;
+                _blockMap[ShapePosRow, ShapePosCol + 1] = _blockMap[ShapePosRow, ShapePosCol];
+                MakeEmpty(ShapePosRow, ShapePosCol);
+                ShapePosCol++;
             }
         }
 
@@ -351,20 +324,8 @@ namespace TetrisOOP
                 }
             }
 
-
-            for (int i = _shape.ShapeMap.GetUpperBound(0); i >= 0; i--)
-            {
-                for (int j = 0; j <= _shape.ShapeMap.GetUpperBound(1); j++)
-                {
-                    if (_shape.ShapeMap[i, j] is ShapeBlock)
-                    {
-                        
-                        ((ShapeBlock)_shape.ShapeMap[i, j]).MoveRight();
-                        ((ShapeBlock)_shape.ShapeMap[i, j]).MapPositionX++;
-                        
-                    }
-                }
-            }
+            ShapePosCol++;
+            RenderShape();
         }
 
         public void ShapeLeft()
@@ -377,24 +338,23 @@ namespace TetrisOOP
                 }
             }
 
-            for (int i = _shape.ShapeMap.GetUpperBound(0); i >= 0; i--)
-            {
-                for (int j = 0; j <= _shape.ShapeMap.GetUpperBound(1); j++)
-                {
-                    if (_shape.ShapeMap[i, j] is ShapeBlock)
-                    {
+            ShapePosCol--;
+            RenderShape();
+        }
 
-                        ((ShapeBlock)_shape.ShapeMap[i, j]).MoveLeft();
-                        ((ShapeBlock)_shape.ShapeMap[i, j]).MapPositionX--;
+        public void RotateLeft()
+        {
+            _shape.RotateLeft();
+        }
 
-                    }
-                }
-            }
+        public void RotateRight()
+        {
+            _shape.RotateRight();
         }
 
         /// <summary>
-    /// Clears the map
-    /// </summary>
+        /// Clears the map
+        /// </summary>
         public void Clear()
         {
             for (int row = 0; row < _blockMap.GetUpperBound(0); row++)

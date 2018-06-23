@@ -24,7 +24,7 @@ namespace TetrisOOP
             _frm = frm;
         }
 
-        public void AddToMap(int rowBlocks, int colBlocks)
+        public void AddToMap(int colBlocks, int rowBlocks)
         {
             p.Location = new Point((_map.BlockSize * colBlocks) - 10, 130 + (_map.BlockSize * rowBlocks));
             _frm.Controls.Add(p);

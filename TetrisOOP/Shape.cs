@@ -11,37 +11,65 @@ namespace TetrisOOP
     {
         public Block[,] ShapeMap;
 
-        public Color _color;
+        public Color color;
+
+        private Map _map;
 
         private Random r = new Random();
 
         public static Color[] colors = { Color.Red, Color.Blue, Color.Green, Color.Gray, Color.Pink };
 
-        public Shape(Block[,] blockMap)
+        public Shape(Block[,] blockMap, Map map)
         {
-            _color = colors[r.Next(0, colors.Length)];
+            color = colors[r.Next(0, colors.Length)];
             ShapeMap = blockMap;
+            _map = map;
             foreach(Block b in ShapeMap)
             {
                 if(b is ShapeBlock)
                 {
-                    ((ShapeBlock)b).p.BackColor = _color;
-                    b.color = _color;
+                    ((ShapeBlock)b).p.BackColor = color;
+                    b.color = color;
                 }
             }
         }
 
-        public void RotateBlockMap()
+        public void RotateLeft()
         {
-            var newblockMap = new Block[ShapeMap.GetUpperBound(1), ShapeMap.GetUpperBound(0)];
-            for(int i = 0; i < newblockMap.GetUpperBound(0); i++)
+            var newBlockMap = new Block[ShapeMap.GetUpperBound(1) + 1, ShapeMap.GetUpperBound(0) + 1];
+            for(int r = 0; r <= newBlockMap.GetUpperBound(0); r++)
             {
-                for(int j = 0; j < newblockMap.GetUpperBound(1); j++)
+                for(int c = 0; c <= newBlockMap.GetUpperBound(1); c++)
                 {
-                    newblockMap[i, j] = ShapeMap[j, i];
+                    newBlockMap[r, c] = ShapeMap[Mirror(c, newBlockMap.GetUpperBound(1)), r];                    
                 }
             }
-            ShapeMap = newblockMap;
+            if(_map.CheckIfRenderable(newBlockMap))
+            {
+                _map.RenderShape();
+            }
+        }
+
+        public void RotateRight()
+        {
+            var newBlockMap = new Block[ShapeMap.GetUpperBound(1) + 1, ShapeMap.GetUpperBound(0) + 1];
+            for (int r = 0; r <= newBlockMap.GetUpperBound(0); r++)
+            {
+                for (int c = 0; c <= newBlockMap.GetUpperBound(1); c++)
+                {
+                    newBlockMap[r, Mirror(c, newBlockMap.GetUpperBound(1))] = ShapeMap[c, r];
+                }
+            }
+            if (_map.CheckIfRenderable(newBlockMap))
+            {
+                _map.RenderShape();
+            }
+        }
+
+        public static int Mirror(int value, int maxValue)
+        {
+            var max = maxValue / 2.0;
+            return (int)((max - (double)value) + max);
         }
     }
 }
