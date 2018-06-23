@@ -19,8 +19,16 @@ namespace TetrisOOP
         public Size Size { get; set; }
 
         // Cors of shape
-        public int ShapePosCol = 3;
-        public int ShapePosRow = 0;
+
+        /// <summary>
+        /// Column of start point of the current shape (left top corner of shape)
+        /// </summary>
+        public int ShapeCol = 3;
+
+        /// <summary>
+        /// Row of start point of the current shape (left top corner of shape)
+        /// </summary>
+        public int ShapeRow = 0;
 
         private Block[,] _blockMap;
 
@@ -77,22 +85,27 @@ namespace TetrisOOP
             _currentBlock = new TetrisBlock(this, _frm);
         }
 
+        /// <summary>
+        /// Adds a given shape to the Map
+        /// </summary>
+        /// <param name="shape">Shape to add to the map</param>
         public void AddShape(Shape shape)
         { 
             _shape = shape;
-
-            // define start redern point
             RenderShape();
         }
 
+        /// <summary>
+        /// Draws the shape with its blocks on the map
+        /// </summary>
         public void RenderShape()
         {
             for (int i = 0; i <= _shape.ShapeMap.GetUpperBound(0); i++)
             {
                 for (int j = 0; j <= _shape.ShapeMap.GetUpperBound(1); j++)
                 {
-                    _shape.ShapeMap[i, j].MapPositionX = ShapePosCol + j;
-                    _shape.ShapeMap[i, j].MapPositionY = ShapePosRow + i;
+                    _shape.ShapeMap[i, j].MapPositionX = ShapeCol + j;
+                    _shape.ShapeMap[i, j].MapPositionY = ShapeRow + i;
 
                     if (_shape.ShapeMap[i, j] is ShapeBlock)
                     {
@@ -102,6 +115,11 @@ namespace TetrisOOP
             }
         }
 
+        /// <summary>
+        /// Checks if the shape on its position on the map is renderable
+        /// </summary>
+        /// <param name="ShapeMap">Shape to check</param>
+        /// <returns>True if renderable</returns>
         public bool CheckIfRenderable(Block[,] ShapeMap)
         {
             for (int i = 0; i <= ShapeMap.GetUpperBound(0); i++)
@@ -110,7 +128,7 @@ namespace TetrisOOP
                 {
                     if (ShapeMap[i, j] is ShapeBlock)
                     {
-                        if(!(_blockMap[ShapePosRow + i, ShapePosCol + j] is EmptyBlock))
+                        if(!(_blockMap[ShapeRow + i, ShapeCol + j] is EmptyBlock))
                         {
                             return false;
                         }
@@ -127,21 +145,25 @@ namespace TetrisOOP
         /// <returns></returns>
         public bool MoveBlock()
         {
-            if( _blockMap[ShapePosRow + 1, ShapePosCol] is EmptyBlock)
+            if( _blockMap[ShapeRow + 1, ShapeCol] is EmptyBlock)
             {
                 _currentBlock.MoveDown();
-                ShapePosRow++;
+                ShapeRow++;
                 return true;
             }
-            _blockMap[ShapePosRow, ShapePosCol] = _currentBlock;
+            _blockMap[ShapeRow, ShapeCol] = _currentBlock;
             return false;
         }
 
+        /// <summary>
+        /// Moves the Shape one step on the map
+        /// </summary>
+        /// <returns>True if successfull</returns>
         public bool MoveShape()
         {
             if (_shape != null)
             {
-                ShapePosRow++;
+                ShapeRow++;
                 if (!CheckIfRenderable(_shape.ShapeMap))
                 {
                     for (int k = _shape.ShapeMap.GetUpperBound(0); k >= 0; k--)
@@ -156,8 +178,8 @@ namespace TetrisOOP
                     }
 
                     // Reset startpoint
-                    ShapePosCol = 3;
-                    ShapePosRow = 0;
+                    ShapeCol = 3;
+                    ShapeRow = 0;
                     return false;
                 }
                 
@@ -178,18 +200,22 @@ namespace TetrisOOP
         }
 
         /// <summary>
-        /// Checks for 3 blocks which have the same color and are next to each other
+        /// Checks for 4 blocks which have the same color and are next to each other
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The number of matches</returns>
         public int Check()
         {
-            for (int row = 2; row < _blockMap.GetUpperBound(0); row++)
+            for (int row = 3; row < _blockMap.GetUpperBound(0); row++)
                 for (int col = 1; col < _blockMap.GetUpperBound(1); col++)
                     CheckVertical(row, col);
 
             for (int row = 0; row < _blockMap.GetUpperBound(0); row++)
-                for (int col = 1; col < _blockMap.GetUpperBound(1) - 2; col++)
+                for (int col = 1; col < _blockMap.GetUpperBound(1) - 3; col++)
                     CheckHorizontal(row, col);
+
+            for (int row = 0; row < _blockMap.GetUpperBound(0) - 1; row++)
+                for (int col = 1; col < _blockMap.GetUpperBound(1) - 1; col++)
+                    CheckLooseBlock(row, col);
 
             return _deletedBlockSets;
         }
@@ -206,18 +232,48 @@ namespace TetrisOOP
             var block1 = _blockMap[r - 1, c];
             // two block abbove
             var block2 = _blockMap[r - 2, c];
+            // three blocks above
+            var block3 = _blockMap[r - 3, c];
             
-            if (block is ShapeBlock && block1 is ShapeBlock && block2 is ShapeBlock)
+            if (block is ShapeBlock && block1 is ShapeBlock && block2 is ShapeBlock && block3 is ShapeBlock)
             {
-                if(block.color == block1.color && block.color == block2.color)
+                if(block.color == block1.color && block.color == block2.color && block.color == block3.color)
                 {
                     ((ShapeBlock)block).Remove();
                     ((ShapeBlock)block1).Remove();
                     ((ShapeBlock)block2).Remove();
+                    ((ShapeBlock)block3).Remove();
                     MakeEmpty(r, c);
                     MakeEmpty(r - 1, c);
                     MakeEmpty(r - 2, c);
+                    MakeEmpty(r - 3, c);
                     _deletedBlockSets++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks for loose Blocks on the map
+        /// </summary>
+        /// <param name="r">Row of Block</param>
+        /// <param name="c">Column of Blocks</param>
+        private void CheckLooseBlock(int r, int c)
+        {
+            var block = _blockMap[r, c];
+            if(block is ShapeBlock)
+            {
+                var blockleft = _blockMap[r, c - 1];
+                var blockright = _blockMap[r, c + 1];
+                var blockbelow = _blockMap[r + 1, c];
+                while(blockright is EmptyBlock && blockleft is EmptyBlock && blockbelow is EmptyBlock)
+                 {
+                    ((ShapeBlock)block).MoveDown();
+                    _blockMap[r + 1, c] = _blockMap[r, c];
+                    MakeEmpty(r, c);
+                    PullBlockDown(r, c);
+                    blockleft = _blockMap[r, c - 1];
+                    blockright = _blockMap[r, c + 1];
+                    blockbelow = _blockMap[r + 1, c];
                 }
             }
         }
@@ -230,24 +286,29 @@ namespace TetrisOOP
         private void CheckHorizontal(int r, int c)
         {
             var block = _blockMap[r, c];
-            // block abbove
+            // one block right
             var block1 = _blockMap[r, c + 1];
-            // block abbove
+            // two blocks right
             var block2 = _blockMap[r, c + 2];
+            // three blocks right
+            var block3 = _blockMap[r, c + 3];
 
-            if (block is ShapeBlock && block1 is ShapeBlock && block2 is ShapeBlock)
+            if (block is ShapeBlock && block1 is ShapeBlock && block2 is ShapeBlock && block3 is ShapeBlock)
             {
                 if (block.color == block1.color && block.color == block2.color)
                 {
                     ((ShapeBlock)block).Remove();
                     ((ShapeBlock)block1).Remove();
                     ((ShapeBlock)block2).Remove();
+                    ((ShapeBlock)block3).Remove();
                     MakeEmpty(r, c);
                     MakeEmpty(r, c + 1);
                     MakeEmpty(r, c + 2);
+                    MakeEmpty(r, c + 3);
                     PullBlockDown(r, c);
                     PullBlockDown(r, c + 1);
                     PullBlockDown(r, c + 2);
+                    PullBlockDown(r, c + 3);
                     _deletedBlockSets++;
                     Check();
                 }
@@ -281,9 +342,7 @@ namespace TetrisOOP
         /// </summary>
         public void DropBlock()
         {
-            while(MoveBlock())
-            {}
-            AddBlock();
+            while (MoveShape()) ;
         }
 
         /// <summary>
@@ -291,12 +350,12 @@ namespace TetrisOOP
         /// </summary>
         public void BlockLeft()
         {
-            if(_blockMap[ShapePosRow, ShapePosCol - 1] is EmptyBlock)
+            if(_blockMap[ShapeRow, ShapeCol - 1] is EmptyBlock)
             {
                 _currentBlock.MoveLeft();
-                _blockMap[ShapePosRow, ShapePosCol - 1] = _blockMap[ShapePosRow, ShapePosCol];
-                MakeEmpty(ShapePosRow, ShapePosCol);
-                ShapePosCol--;
+                _blockMap[ShapeRow, ShapeCol - 1] = _blockMap[ShapeRow, ShapeCol];
+                MakeEmpty(ShapeRow, ShapeCol);
+                ShapeCol--;
             }
         }
 
@@ -305,15 +364,18 @@ namespace TetrisOOP
         /// </summary>
         public void BlockRight()
         {
-            if(_blockMap[ShapePosRow, ShapePosCol + 1] is EmptyBlock)
+            if(_blockMap[ShapeRow, ShapeCol + 1] is EmptyBlock)
             {
                 _currentBlock.MoveRight();
-                _blockMap[ShapePosRow, ShapePosCol + 1] = _blockMap[ShapePosRow, ShapePosCol];
-                MakeEmpty(ShapePosRow, ShapePosCol);
-                ShapePosCol++;
+                _blockMap[ShapeRow, ShapeCol + 1] = _blockMap[ShapeRow, ShapeCol];
+                MakeEmpty(ShapeRow, ShapeCol);
+                ShapeCol++;
             }
         }
 
+        /// <summary>
+        /// Moves the currently active Shape right
+        /// </summary>
         public void ShapeRight()
         {
             for (int i = _shape.ShapeMap.GetUpperBound(0); i >= 0; i--)
@@ -324,10 +386,13 @@ namespace TetrisOOP
                 }
             }
 
-            ShapePosCol++;
+            ShapeCol++;
             RenderShape();
         }
 
+        /// <summary>
+        /// Moves the currrently active Shape left
+        /// </summary>
         public void ShapeLeft()
         {
             for (int i = _shape.ShapeMap.GetUpperBound(0); i >= 0; i--)
@@ -338,15 +403,21 @@ namespace TetrisOOP
                 }
             }
 
-            ShapePosCol--;
+            ShapeCol--;
             RenderShape();
         }
 
+        /// <summary>
+        /// Rotates the shape left (clockwise)
+        /// </summary>
         public void RotateLeft()
         {
             _shape.RotateLeft();
         }
 
+        /// <summary>
+        /// Rotates the shape right (counter clockwise)
+        /// </summary>
         public void RotateRight()
         {
             _shape.RotateRight();

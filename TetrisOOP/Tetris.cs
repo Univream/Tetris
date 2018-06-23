@@ -88,7 +88,12 @@ namespace TetrisOOP
         {
             timer.Enabled = !timer.Enabled;
         }
-        
+
+        /// <summary>
+        /// Defines the game procedure
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Tick(object sender, EventArgs e)
         {
             if (!_map.MoveShape())
@@ -113,6 +118,7 @@ namespace TetrisOOP
         {
             timer.Enabled = false;
             _map.DropBlock();
+            _map.AddShape(_shapes[r.Next(_shapes.Length)].Invoke());
             level = _map.Check();
             timer.Enabled = true;
         }
